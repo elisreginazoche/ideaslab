@@ -1,17 +1,19 @@
+%Funcion of MATLAB
+
 function[Ybus,de,para,barra,lin,re,med,ybus]=criateYbus(barra,lin,shunt,conf,Sbase,traf,reg,med)
  lin1=lin;
 
 
-  confN=conf(1,:);
+  confN=conf(1,:); %input data
   conf=str2double(conf(2:length(conf(:,1)),:));
- %Conversão pés=> km, e milha => km
+ %ConversÃ£o pÃ©s=> km, e milha => km
  ftkm=0.0003048;
  milekm= 1.609344;
- %Atualização das matrizes lin e conf para Km
+ %AtualizaÃ§Ã£o das matrizes lin e conf para Km
  conf(:,3:length(conf(1,:)))= conf(:,3:length(conf(1,:)))/milekm;
  lin(:,4)=lin(:,4)*ftkm;
  
- %Definições 
+ %DefiniÃ§Ãµes 
  nb= length(barra(:,1));     %num. de barras
  nl= length(lin(:,3));       %num. de linhas
  nome=barra(:,1);            %nome original da barra
@@ -19,7 +21,7 @@ function[Ybus,de,para,barra,lin,re,med,ybus]=criateYbus(barra,lin,shunt,conf,Sba
  tapt=traf(:,[4 5 6]);
  faset=traf(:,[7 8 9]);
  end
- for i=1:nl                  %Atualização dos nomes(n°) das barras
+ for i=1:nl                  %AtualizaÃ§Ã£o dos nomes(nÂ°) das barras
      for j=1:nb
          if lin(i,1) == nome(j);
              de(i)= barra(j,2)';
@@ -43,7 +45,7 @@ for i=1:length(reg(:,1))
     reg_de(i)=find(barra(:,1)==reg(i,2)); %barra de do regulador
     reg_para(i)=find(barra(:,1)==reg(i,3)); %barra para do regulador
     reg_dec(i)=find(barra(:,1)==reg(i,4));  %barra de - controle
-    reg_parac(i)=find(barra(:,1)==reg(i,5)); %barra para - controle (barra que está sendo controlada)
+    reg_parac(i)=find(barra(:,1)==reg(i,5)); %barra para - controle (barra que estÃ¡ sendo controlada)
     reg_nb(i,1)=length(barra(:,1))+i;   %aumento do numero de barras
     switch reg(i,6)
        case 123
@@ -166,7 +168,7 @@ end
 
 
  
-  %Criação da Ybus
+  %CriaÃ§Ã£o da Ybus
 phase=Z(:,1)'; %Fases ABC ou 123 de cada linha
 Z=[Z(:,2:length(Z(1,:)))] ;
 r=[Z(:,find(confN=='Raa')-2) Z(:,find(confN=='Rab')-2) Z(:,find(confN=='Rac')-2) Z(:,find(confN=='Rbb')-2) Z(:,find(confN=='Rbc')-2) Z(:,find(confN=='Rcc')-2)]./((lin(:,6)).^2/Sbase);
@@ -177,7 +179,7 @@ bs=[Z(:,find(confN=='Baa')-2) Z(:,find(confN=='Bab')-2) Z(:,find(confN=='Bac')-2
 
 for i=1:nl
    if lin(i,5) == 0 
-    TAPm(i,[1 2 3]) = tapt;  %%Colocar aqui o MÓDULO DO TAP DA FASE A, B E C.
+    TAPm(i,[1 2 3]) = tapt;  %%Colocar aqui o MÃ“DULO DO TAP DA FASE A, B E C.
     TAPp(i,[1 2 3]) = faset;
    else
     TAPm(i,[1 2 3]) = [1 1 1];
@@ -185,7 +187,7 @@ for i=1:nl
    end
 end
 
- %Aumento do número de barras devido aos reguladores;
+ %Aumento do nÃºmero de barras devido aos reguladores;
 if reg(1,1)~=0
     barra2=barra;
 for j=1:length(reg(:,1))
@@ -230,9 +232,9 @@ for a=1:length(reg_nb)
     % med(length(med(:,1))+[1 2],:)=[(length(med(:,1))+1) 0 1 b reg_nb(a) reg_nb(a);(length(med(:,1))+1) 0 2 b reg_nb(a) reg_nb(a)];
     end
 end
-%Tipo igual a 20: representa uma medida fictícia, devido ao regulador;
+%Tipo igual a 20: representa uma medida fictÃ­cia, devido ao regulador;
 %%
-%Mudança das linhas em função do regulador
+%MudanÃ§a das linhas em funÃ§Ã£o do regulador
 for i=1:length(reg(:,1))
     a(i)=find(lin(:,1)==reg(i,2) & lin(:,2)==reg(i,3));
     lin_reg(i,:)=lin(a(i),:);
@@ -412,7 +414,7 @@ re.ph=reg_ph;
 re.de= reg_de; %barra de do regulador
 re.para= reg_para; %barra para do regulador
 re.dec=reg_dec; %barra de - controle
-re.parac=reg_parac;  %barra para - controle (barra que está sendo controlada)
+re.parac=reg_parac;  %barra para - controle (barra que estÃ¡ sendo controlada)
 re.nb=reg_nb;  %aumento do numero de barras  (barras extras)
 re.tap=reg_tap;
 re.band= reg_band;
